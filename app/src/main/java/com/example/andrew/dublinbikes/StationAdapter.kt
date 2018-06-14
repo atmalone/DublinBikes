@@ -1,5 +1,6 @@
 package com.example.andrew.dublinbikes
 
+import android.annotation.SuppressLint
 import org.json.JSONException
 import org.json.JSONArray
 import org.json.JSONObject
@@ -46,6 +47,7 @@ class StationAdapter : RecyclerView.Adapter<StationAdapter.ViewHolder>() {
         return ViewHolder(view)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val station = stations[position]
 

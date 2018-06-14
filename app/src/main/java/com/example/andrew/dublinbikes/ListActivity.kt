@@ -1,56 +1,44 @@
-package com.andrewmalone.assignmentapp
+package com.example.andrew.dublinbikes
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.ActionBar
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.SearchView
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
+import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
-import com.example.andrew.dublinbikes.R
-import com.example.andrew.dublinbikes.R.id.bikeListView
-import com.example.andrew.dublinbikes.Station
-import com.example.andrew.dublinbikes.StationAdapter
+import android.view.ViewGroup
+import kotlinx.android.synthetic.main.fragment_list.view.*
 import okhttp3.*
-
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-
-import java.io.FileOutputStream
 import java.io.IOException
-import java.util.ArrayList
-import java.util.Collections
-import java.util.Comparator
-import java.util.Objects
+import java.util.*
 
-class ListActivity : AppCompatActivity() {
+class ListActivity : Fragment() {
 
     private var mAdapter: StationAdapter? = null
     private var backupStations: List<Station> = ArrayList<Station>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_list)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_list, container, false)
+    }
 
-        val toolbar = findViewById(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        Objects.requireNonNull<ActionBar>(supportActionBar).setTitle("City Bikes")
-
-        val mRecyclerView = findViewById(bikeListView)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val mRecyclerView = view.bikeListView
         mRecyclerView.setHasFixedSize(true)
-        val mLayoutManager = LinearLayoutManager(this)
-        mRecyclerView.setLayoutManager(mLayoutManager)
+        val mLayoutManager = LinearLayoutManager(context)
+        mRecyclerView.layoutManager = mLayoutManager
 
         mAdapter = StationAdapter()
         //ListView is empty while awaiting stationArrayList info from run()
 
         mRecyclerView.setAdapter(mAdapter)
+    }
+
+    override fun onStart() {
+        super.onStart()
         run()
     }
 
@@ -87,7 +75,7 @@ class ListActivity : AppCompatActivity() {
 
     }
 
-    fun run() {
+    private fun run() {
         val client = OkHttpClient()
 
         val request = Request.Builder().url("https://api.jcdecaux.com/vls/v1/stations?contract=Dublin&apiKey=bd691853cab2e508f00c0fea04bd3599d1ba42e5")
@@ -104,8 +92,8 @@ class ListActivity : AppCompatActivity() {
                 val result = Objects.requireNonNull<ResponseBody>(response.body()).string() //Json string
                 try {
                     parseJsonResponse(result) // Pass Json string into parseJsonResponse methods
-                    writeToFile(result, applicationContext)
-                    updateAdapter()
+//                    writeToFile(result)
+//                    updateAdapter()
 
                 } catch (ex: Exception) {
                     ex.printStackTrace()
@@ -115,75 +103,75 @@ class ListActivity : AppCompatActivity() {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+//    fun onCreateOptionsMenu(menu: Menu) {
+//
+//        val inflater = menuInflater
+//        inflater.inflate(R.menu.menu_main, menu)
+//        val searchItem = menu.findItem(R.id.search)
+//        val refreshItem = menu.findItem(R.id.refresh)
+//
+//
+//        refreshItem.setOnMenuItemClickListener {
+//            mAdapter!!.notifyDataSetChanged()
+//            true
+//        }
+//
+//        val searchView = searchItem.actionView as SearchView
+//
+//        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+//            override fun onQueryTextSubmit(query: String): Boolean {
+//                return false
+//            }
+//
+//            override fun onQueryTextChange(newText: String?): Boolean {
+//                if (newText != null && !newText.isEmpty()) {
+//                    mAdapter!!.stations = ArrayList(backupStations)
+//
+//                    val stations = ArrayList<Station>(backupStations)
+//                    for (item in stations) {
+//                        if (!item.getName()!!.contains(newText.toUpperCase())) {
+//                            mAdapter!!.stations.remove(item)
+//                            mAdapter!!.notifyDataSetChanged()
+//                        }
+//                    }
+//                } else {
+//                    mAdapter!!.stations = ArrayList<Station>(backupStations)
+//                    mAdapter!!.notifyDataSetChanged()
+//                }
+//
+//                return true
+//            }
+//        })
+//
+//        return super.onCreateOptionsMenu(menu)
+//    }
 
-        val inflater = menuInflater
-        inflater.inflate(R.menu.menu_main, menu)
-        val searchItem = menu.findItem(R.id.search)
-        val refreshItem = menu.findItem(R.id.refresh)
-
-
-        refreshItem.setOnMenuItemClickListener {
-            mAdapter!!.notifyDataSetChanged()
-            true
-        }
-
-        val searchView = searchItem.actionView as SearchView
-
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null && !newText.isEmpty()) {
-                    mAdapter!!.stations = ArrayList<Station>(backupStations)
-
-                    val stations = ArrayList<Station>(backupStations)
-                    for (item in stations) {
-                        if (!item.getName()!!.contains(newText.toUpperCase())) {
-                            mAdapter!!.stations.remove(item)
-                            mAdapter!!.notifyDataSetChanged()
-                        }
-                    }
-                } else {
-                    mAdapter!!.stations = ArrayList<Station>(backupStations)
-                    mAdapter!!.notifyDataSetChanged()
-                }
-
-                return true
-            }
-        })
-
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    internal fun updateAdapter() {
-        runOnUiThread { mAdapter!!.notifyDataSetChanged() }
-    }
+//    internal fun updateAdapter() {
+//        this@ListActivityrunOnUiThread(Runnable { mAdapter!!.notifyDataSetChanged() })
+//    }
 
 
     //Writing the json data to file
-    fun writeToFile(data: String, context: Context) {
-        val filename = "stationArrayList.json"
-        val outputStream: FileOutputStream
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
-            outputStream.write(data.toByteArray())
-            outputStream.close()
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-    }
-
-    companion object {
-
-        fun createIntent(context: Context): Intent {
-            val myIntent = Intent(context, ListActivity::class.java)
-            return Intent(context, ListActivity::class.java)
-        }
-    }
+//    fun writeToFile(data: String) {
+//        val filename = "stationArrayList.json"
+//        val outputStream: FileOutputStream
+//        try {
+//            outputStream = openFileOutput(filename, Context.MODE_PRIVATE)
+//            outputStream.write(data.toByteArray())
+//            outputStream.close()
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//
+//    }
+//
+//    companion object {
+//
+//        fun createIntent(context: Context): Intent {
+//            val myIntent = Intent(context, ListActivity::class.java)
+//            return Intent(context, ListActivity::class.java)
+//        }
+//    }
 
 
 }
