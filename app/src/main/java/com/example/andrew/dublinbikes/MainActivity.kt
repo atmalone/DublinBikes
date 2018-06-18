@@ -1,22 +1,15 @@
 package com.example.andrew.dublinbikes
 
+import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_main.view.*
 import okhttp3.*
 import java.io.IOException
 import java.util.*
@@ -55,7 +48,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
+//        menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
@@ -103,7 +96,7 @@ class MainActivity : AppCompatActivity() {
                     MapsActivity()
                 }
                 1 -> {
-                    ListActivity()
+                    ListFragment()
                 }
                 2 -> { FavouritesActivity() }
                 else -> null

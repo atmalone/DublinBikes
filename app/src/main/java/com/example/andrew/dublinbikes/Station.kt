@@ -1,12 +1,16 @@
 package com.example.andrew.dublinbikes
 
 import org.json.JSONException
-import java.lang.reflect.Array.getDouble
 import org.json.JSONObject
 
 
+class Station : Comparable<Station> {
+    override fun compareTo(other: Station): Int {
 
-class Station {
+        val otherName = other.getName()!!
+        return this.getName()?.compareTo(otherName)!!
+    }
+
     private var number: Int = 0
     private var name: String? = null
     private var address: String? = null
