@@ -12,6 +12,8 @@ import java.util.*
 class StationAdapter : RecyclerView.Adapter<StationAdapter.ViewHolder>() {
     //List of stations
     var stations: MutableList<Station> = ArrayList()
+    lateinit var stationsFilteredList: MutableList<Station>
+
 
     private val mAdapter: StationAdapter? = null
 
@@ -47,6 +49,31 @@ class StationAdapter : RecyclerView.Adapter<StationAdapter.ViewHolder>() {
         //        here we create a VieWHolder, and pass it the above view
         return ViewHolder(view)
     }
+
+//    override fun getFilter(): Filter{
+//
+//        return object : Filter(){
+//            override fun performFiltering(constraint: CharSequence?): FilterResults {
+//                var charString: String = constraint.toString()
+//                if (charString.isEmpty())
+//                {
+//                    stationsFilteredList = stations
+//                }
+//                else{
+//                    var filteredList: MutableList<Station> = mutableListOf()
+//                    for (s: Station in stations){
+//                        if (s.getName()!!.toLowerCase().contains(charString.toLowerCase())){
+//                            stationsFilteredList.add(s)
+//                        }
+//                    }
+//                    stationsFilteredList = filteredList
+//                }
+//                var filterResults: FilterResults = FilterResults()
+//                filterResults.values = stationsFilteredList
+//                return filterResults
+//            }
+//        }
+//    }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
